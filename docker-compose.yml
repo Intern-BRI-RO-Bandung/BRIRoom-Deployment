@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: briroom-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: briroom
+      POSTGRES_USER: briroom_user
+      POSTGRES_PASSWORD: briroom_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./briroom-be/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    networks:
+      - briroom-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U briroom_user -d briroom"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./briroom-be
+      dockerfile: Dockerfile
+    container_name: briroom-backend
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5001
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: briroom
+      DB_USER: briroom_user
+      DB_PASSWORD: briroom_password
+      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+      CORS_ORIGIN: http://localhost
+      WHATSAPP_API_URL: https://api.whatsapp.com
+      WHATSAPP_TOKEN: your-whatsapp-token
+      ZOOM_API_KEY: your-zoom-api-key
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./briroom-be/logs:/app/logs
+    networks:
+      - briroom-network
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Application
+  frontend:
+    build:
+      context: ./briroom-fe
+      dockerfile: Dockerfile
+    container_name: briroom-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    networks:
+      - briroom-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis (optional - for session management and caching)
+  redis:
+    image: redis:7-alpine
+    container_name: briroom-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - briroom-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  briroom-network:
+    driver: bridge

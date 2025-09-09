@@ -1,0 +1,29 @@
+# Dependencies
+# Ini akan mengabaikan SEMUA folder node_modules, termasuk yang di dalam briroom-be dan briroom-fe
+node_modules/
+
+# Environment Variables (SANGAT PENTING!)
+# Abaikan SEMUA file .env
+.env
+*.env.local
+.env.*
+
+# Editor Settings
+.vscode/
+
+# Build outputs
+dist/
+build/
+.next/
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Opsional: Jika Anda tidak ingin file PDF ini di-upload, hapus tanda # di bawah
+# Magang BRI.pdf
+
+# Cypress test artifacts
+briroom-fe/cypress/screenshots/
+briroom-fe/cypress/videos/

@@ -1,0 +1,25 @@
+{
+  "name": "briroom-development",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Aplikasi booking ruangan dan Zoom meeting untuk BRI yang dikembangkan dengan Node.js Express (Backend) dan React Vite (Frontend).",
+  "main": "test-complete-system.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Intern-BRI-RO-Bandung/BRIRoom-Development.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Intern-BRI-RO-Bandung/BRIRoom-Development/issues"
+  },
+  "homepage": "https://github.com/Intern-BRI-RO-Bandung/BRIRoom-Development#readme",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "node-fetch": "^3.3.2"
+  }
+}
