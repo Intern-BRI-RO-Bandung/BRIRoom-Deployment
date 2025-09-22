@@ -18,9 +18,10 @@ export const createRateLimit = (windowMs = 15 * 60 * 1000, max = 100) => {
 
 // CORS configuration
 export const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.com'] 
-    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'http://127.0.0.1:5500'],
+  // origin: process.env.NODE_ENV === 'production' 
+  //   ? ['https://your-frontend-domain.com'] 
+  //   : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'http://127.0.0.1:5500'],
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
